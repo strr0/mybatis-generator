@@ -1,0 +1,20 @@
+url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+driver: com.mysql.cj.jdbc.Driver
+user: root
+password: password
+
+modelPackage: example.model
+modelProject: src/main/java
+
+mapperPackage: example.mapper
+mapperProject: src/main/java
+
+servicePackage: example.service
+serviceProject: src/main/java
+
+controllerPackage: example.controller
+controllerProject: src/main/java
+needResult: true
+controllerResult: example.common.Result
+
+tables: ["pms_product"]
