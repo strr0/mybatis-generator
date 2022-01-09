@@ -34,7 +34,7 @@ public class JavaSqlProviderSelectByParamSelectiveMethodGenerator extends Abstra
         method.addBodyLine("applyWhere(sql, param);");
         method.addBodyLine("");
         // 添加分页
-        method.addBodyLine("sql.LIMIT(\"#{pageable.pageNumber} #{pageable.pageSize}\");");
+        method.addBodyLine("sql.LIMIT(\"#{pageable.pageNumber}, #{pageable.pageSize}\");");
         method.addBodyLine("");
         method.addBodyLine("return sql.toString();");
         topLevelClass.addStaticImports(staticImports);
