@@ -9,6 +9,9 @@ import java.util.TreeSet;
 public class JavaServiceImplUpdateMethodGenerator extends AbstractJavaServiceImplMethodGenerator {
     @Override
     public void addClassElements(TopLevelClass topLevelClass) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         String basicName = ((CustomIntrospectedTable)this.introspectedTable).getBasicName();
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());

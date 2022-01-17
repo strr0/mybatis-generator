@@ -14,6 +14,9 @@ import java.util.TreeSet;
 public class JavaSqlProviderUpdateByPrimaryKeySelectiveMethodGenerator extends AbstractJavaSqlProviderMethodGenerator {
     @Override
     public void addClassElements(TopLevelClass topLevelClass) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         Set<String> staticImports = new TreeSet();
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         importedTypes.add(NEW_BUILDER_IMPORT);

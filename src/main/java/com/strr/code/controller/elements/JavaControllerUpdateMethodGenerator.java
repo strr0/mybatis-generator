@@ -9,16 +9,20 @@ import java.util.TreeSet;
 public class JavaControllerUpdateMethodGenerator extends AbstractJavaControllerMethodGenerator {
     @Override
     public void addClassElements(TopLevelClass topLevelClass) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         String basicName = ((CustomIntrospectedTable)this.introspectedTable).getBasicName();
         String result = ((CustomIntrospectedTable) this.introspectedTable).getControllerResult();
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
-        FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());
-        importedTypes.add(parameterType);
         importedTypes.add(new FullyQualifiedJavaType("org.springframework.web.bind.annotation.PutMapping"));
         Method method = new Method("update");
         method.addAnnotation("@PutMapping(\"/update\")");
         method.setVisibility(JavaVisibility.PUBLIC);
         FullyQualifiedJavaType returnType = new FullyQualifiedJavaType(result);
+        importedTypes.add(returnType);
+        FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());
+        importedTypes.add(parameterType);
         returnType.addTypeArgument(parameterType);
         method.setReturnType(returnType);
         method.addParameter(new Parameter(parameterType, "record"));

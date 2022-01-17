@@ -15,12 +15,13 @@ public class JavaControllerSaveMethodGenerator extends AbstractJavaControllerMet
         importedTypes.add(new FullyQualifiedJavaType("org.springframework.web.bind.annotation.PostMapping"));
         Method method = new Method("save");
         method.addAnnotation("@PostMapping(\"/save\")");
+        method.setVisibility(JavaVisibility.PUBLIC);
         FullyQualifiedJavaType returnType = new FullyQualifiedJavaType(result);
+        importedTypes.add(returnType);
         FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());
+        importedTypes.add(parameterType);
         returnType.addTypeArgument(parameterType);
         method.setReturnType(returnType);
-        method.setVisibility(JavaVisibility.PUBLIC);
-        importedTypes.add(parameterType);
         method.addParameter(new Parameter(parameterType, "record"));
         // 方法体
         method.addBodyLine(String.format("if (%sService.save(record) == 1) {", basicName));

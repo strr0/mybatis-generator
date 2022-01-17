@@ -8,6 +8,9 @@ import java.util.TreeSet;
 public class JavaMapperUpdateByPrimaryKeySelectiveMethodGenerator extends AbstractJavaMapperMethodGenerator {
     @Override
     public void addInterfaceElements(Interface interfaze) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         FullyQualifiedJavaType parameterType;
         if (this.introspectedTable.getRules().generateRecordWithBLOBsClass()) {

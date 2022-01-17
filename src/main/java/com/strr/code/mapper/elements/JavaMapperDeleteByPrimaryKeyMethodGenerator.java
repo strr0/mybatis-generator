@@ -14,6 +14,10 @@ import java.util.TreeSet;
 public class JavaMapperDeleteByPrimaryKeyMethodGenerator extends AbstractJavaMapperMethodGenerator {
     @Override
     public void addInterfaceElements(Interface interfaze) {
+        List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
+        if (introspectedColumns.isEmpty()) {
+            return;
+        }
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         Method method = new Method("deleteByPrimaryKey");
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -24,7 +28,6 @@ public class JavaMapperDeleteByPrimaryKeyMethodGenerator extends AbstractJavaMap
             importedTypes.add(type);
             method.addParameter(new Parameter(type, "key"));
         } else {
-            List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
             boolean annotate = introspectedColumns.size() > 1;
             if (annotate) {
                 importedTypes.add(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));

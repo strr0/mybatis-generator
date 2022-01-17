@@ -14,6 +14,9 @@ import java.util.TreeSet;
 public class JavaMapperUpdateByPrimaryKeyWithoutBLOBsMethodGenerator extends AbstractJavaMapperMethodGenerator {
     @Override
     public void addInterfaceElements(Interface interfaze) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());
         importedTypes.add(parameterType);

@@ -8,6 +8,9 @@ import java.util.TreeSet;
 public class JavaServiceUpdateMethodGenerator extends AbstractJavaServiceMethodGenerator {
     @Override
     public void addInterfaceElements(Interface interfaze) {
+        if (this.introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
         FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.introspectedTable.getBaseRecordType());
         importedTypes.add(parameterType);

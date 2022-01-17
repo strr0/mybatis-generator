@@ -11,6 +11,10 @@ import java.util.TreeSet;
 public class JavaControllerRemoveMethodGenerator extends AbstractJavaControllerMethodGenerator {
     @Override
     public void addClassElements(TopLevelClass topLevelClass) {
+        List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
+        if (introspectedColumns.isEmpty()) {
+            return;
+        }
         String basicName = ((CustomIntrospectedTable)this.introspectedTable).getBasicName();
         String result = ((CustomIntrospectedTable) this.introspectedTable).getControllerResult();
         Set<FullyQualifiedJavaType> importedTypes = new TreeSet();
@@ -22,18 +26,16 @@ public class JavaControllerRemoveMethodGenerator extends AbstractJavaControllerM
         FullyQualifiedJavaType integer = new FullyQualifiedJavaType("Integer");
         returnType.addTypeArgument(integer);
         method.setReturnType(returnType);
-        List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
-        if (introspectedColumns.size() > 0) {
-            IntrospectedColumn introspectedColumn = introspectedColumns.get(0);
-            FullyQualifiedJavaType type = introspectedColumn.getFullyQualifiedJavaType();
-            importedTypes.add(type);
-            method.addParameter(new Parameter(type, introspectedColumn.getJavaProperty()));
-            // 方法体
-            method.addBodyLine(String.format("if (%sService.remove(%s) == 1) {", basicName, introspectedColumn.getJavaProperty()));
-            method.addBodyLine("return Result.ok();");
-            method.addBodyLine("}");
-            method.addBodyLine("return Result.error();");
-        }
+        // 主键
+        IntrospectedColumn introspectedColumn = introspectedColumns.get(0);
+        FullyQualifiedJavaType type = introspectedColumn.getFullyQualifiedJavaType();
+        importedTypes.add(type);
+        method.addParameter(new Parameter(type, introspectedColumn.getJavaProperty()));
+        // 方法体
+        method.addBodyLine(String.format("if (%sService.remove(%s) == 1) {", basicName, introspectedColumn.getJavaProperty()));
+        method.addBodyLine("return Result.ok();");
+        method.addBodyLine("}");
+        method.addBodyLine("return Result.error();");
         this.context.getCommentGenerator().addGeneralMethodComment(method, this.introspectedTable);
         topLevelClass.addImportedTypes(importedTypes);
         topLevelClass.addMethod(method);

@@ -14,6 +14,10 @@ import java.util.TreeSet;
 public class JavaMapperSelectByPrimaryKeyMethodGenerator extends AbstractJavaMapperMethodGenerator {
     @Override
     public void addInterfaceElements(Interface interfaze) {
+        List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
+        if (introspectedColumns.isEmpty()) {
+            return;
+        }
         Method method = new Method(this.introspectedTable.getSelectByPrimaryKeyStatementId());
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setAbstract(true);
@@ -26,7 +30,6 @@ public class JavaMapperSelectByPrimaryKeyMethodGenerator extends AbstractJavaMap
             importedTypes.add(type);
             method.addParameter(new Parameter(type, "key"));
         } else {
-            List<IntrospectedColumn> introspectedColumns = this.introspectedTable.getPrimaryKeyColumns();
             boolean annotate = introspectedColumns.size() > 1;
             if (annotate) {
                 importedTypes.add(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));
