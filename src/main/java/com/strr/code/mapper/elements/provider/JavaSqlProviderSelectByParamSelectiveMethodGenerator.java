@@ -21,9 +21,11 @@ public class JavaSqlProviderSelectByParamSelectiveMethodGenerator extends Abstra
         method.setReturnType(FullyQualifiedJavaType.getStringInstance());
         importedTypes.add(new FullyQualifiedJavaType("java.util.Map"));
         method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Map<java.lang.String, java.lang.Object>"), "parameter"));
-        FullyQualifiedJavaType param = new FullyQualifiedJavaType(((CustomIntrospectedTable)this.introspectedTable).getMyBatis3JavaVOType());
-        importedTypes.add(param);
-        method.addBodyLine(String.format("%s param = (%s) parameter.get(\"param\");", param.getShortName(), param.getShortName()));
+        FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(((CustomIntrospectedTable)this.introspectedTable).getMyBatis3JavaVOType());
+        importedTypes.add(paramType);
+        FullyQualifiedJavaType pageableType = new FullyQualifiedJavaType("org.springframework.data.domain.Pageable");
+        importedTypes.add(pageableType);
+        method.addBodyLine(String.format("%s param = (%s) parameter.get(\"param\");", paramType.getShortName(), paramType.getShortName()));
         this.context.getCommentGenerator().addGeneralMethodComment(method, this.introspectedTable);
         method.addBodyLine("SQL sql = new SQL();");
         for(Iterator var7 = this.getColumns().iterator(); var7.hasNext(); ) {
@@ -34,7 +36,8 @@ public class JavaSqlProviderSelectByParamSelectiveMethodGenerator extends Abstra
         method.addBodyLine("applyWhere(sql, param);");
         method.addBodyLine("");
         // 添加分页
-        method.addBodyLine("sql.LIMIT(\"#{pageable.pageNumber}, #{pageable.pageSize}\");");
+        method.addBodyLine("Pageable pageable = (Pageable) parameter.get(\"pageable\");");
+        method.addBodyLine("sql.LIMIT(String.format(\"%d, %d\", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));");
         method.addBodyLine("");
         method.addBodyLine("return sql.toString();");
         topLevelClass.addStaticImports(staticImports);
